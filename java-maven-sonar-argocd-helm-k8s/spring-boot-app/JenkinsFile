@@ -63,10 +63,11 @@ pipeline {
                     passwordVariable: 'GITHUB_TOKEN'
                 )]) {
                     sh '''
+                        git config --global advice.addIgnoredFile false
                         git config --global user.email "udit.210@gmail.com"
                         git config --global user.name "uditsawhney"
                         sed -i "s|replaceImageTag|${BUILD_NUMBER}|g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-                        git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+                        git add -f java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
                         git commit -m "Update deployment image to version ${BUILD_NUMBER}"
                         git push https://${GIT_USER}:${GITHUB_TOKEN}@github.com/uditsawhney/Jenkins-Zero-To-Hero.git HEAD:main
                     '''
