@@ -6,22 +6,22 @@ pipeline {
     }
   }
   stages {
-    stage('Clean Workspace') {
+    stage('Clean & Checkout') {
       steps {
-        cleanWs()
-      }
-    }
-    stage('Checkout') {
-      steps {
+        // First clean existing workspace
+        deleteDir()
+        
+        // Then checkout with forced clean
         checkout([
           $class: 'GitSCM',
           branches: [[name: 'main']],
-          extensions: [[
-            $class: 'CleanBeforeCheckout'
-          ]],
+          extensions: [
+            [$class: 'CleanBeforeCheckout'],
+            [$class: 'CloneOption', depth: 0, noTags: false, reference: '', shallow: false]
+          ],
           userRemoteConfigs: [[
             url: 'https://github.com/uditsawhney/Jenkins-Zero-To-Hero.git',
-            credentialsId: 'github' // Verify this credential exists
+            credentialsId: 'github' // MUST match your credential ID
           ]]
         ])
       }
