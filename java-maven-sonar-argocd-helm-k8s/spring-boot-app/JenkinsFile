@@ -6,10 +6,24 @@ pipeline {
     }
   }
   stages {
+    stage('Clean Workspace') {
+      steps {
+        cleanWs()
+      }
+    }
     stage('Checkout') {
       steps {
-        sh 'echo passed'
-        //git branch: 'main', url: 'https://github.com/uditsawhney/Jenkins-Zero-To-Hero.git'
+        checkout([
+          $class: 'GitSCM',
+          branches: [[name: 'main']],
+          extensions: [[
+            $class: 'CleanBeforeCheckout'
+          ]],
+          userRemoteConfigs: [[
+            url: 'https://github.com/uditsawhney/Jenkins-Zero-To-Hero.git',
+            credentialsId: 'github' // Verify this credential exists
+          ]]
+        ])
       }
     }
     stage('Build and Test') {
